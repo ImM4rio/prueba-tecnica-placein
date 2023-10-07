@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mario\\source\\repos\\PedidosAPI\\PedidosAPI\\PedidosAPI.csproj": {}
+    "C:\\Users\\mario\\source\\repos\\pedidosApi\\PedidosAPI\\PedidosAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mario\\source\\repos\\PedidosAPI\\PedidosAPI\\PedidosAPI.csproj": {
+    "C:\\Users\\mario\\source\\repos\\pedidosApi\\PedidosAPI\\PedidosAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mario\\source\\repos\\PedidosAPI\\PedidosAPI\\PedidosAPI.csproj",
+        "projectUniqueName": "C:\\Users\\mario\\source\\repos\\pedidosApi\\PedidosAPI\\PedidosAPI.csproj",
         "projectName": "PedidosAPI",
-        "projectPath": "C:\\Users\\mario\\source\\repos\\PedidosAPI\\PedidosAPI\\PedidosAPI.csproj",
+        "projectPath": "C:\\Users\\mario\\source\\repos\\pedidosApi\\PedidosAPI\\PedidosAPI.csproj",
         "packagesPath": "C:\\Users\\mario\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mario\\source\\repos\\PedidosAPI\\PedidosAPI\\obj\\",
+        "outputPath": "C:\\Users\\mario\\source\\repos\\pedidosApi\\PedidosAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\mario\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -2,6 +2,7 @@
 using PedidosAPI.Models;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics.Eventing.Reader;
 using System.Text.Json;
 
 namespace PedidosAPI.Controllers
@@ -11,10 +12,12 @@ namespace PedidosAPI.Controllers
     public class PedidosController : ControllerBase
     {
         private readonly string cadenaSQL;
+        private readonly string cadenaSQLProd;
         private readonly string weatherURL;
 
         public PedidosController(IConfiguration configuration)
         {
+            cadenaSQLProd = configuration.GetConnectionString("CadenaSQLProd");
             cadenaSQL = configuration.GetConnectionString("CadenaSQL");
             weatherURL = configuration.GetConnectionString("WeatherURL");
 
@@ -45,7 +48,6 @@ namespace PedidosAPI.Controllers
                                 Nombre = rd["Nombre"].ToString(),
                                 Descripcion = rd["Descripcion"].ToString(),
                                 Ubicacion = rd["Ubicacion"].ToString(),
-                                Sandbox = rd.GetBoolean("Sandbox"),
                                 Temperatura = rd.IsDBNull(rd.GetOrdinal("Temperatura")) ? 0 : rd.GetInt32(rd.GetOrdinal("Temperatura")),
                                 Humedad = rd.IsDBNull(rd.GetOrdinal("Humedad")) ? 0 : rd.GetInt32(rd.GetOrdinal("Humedad"))
                             }) ;
@@ -62,8 +64,8 @@ namespace PedidosAPI.Controllers
         }
 
         [HttpPost]
-        [Route("registro")]
-        public async Task<IActionResult> registro([FromBody] Pedido pedido)
+        [Route("registro/{sandbox}")]
+        public async Task<IActionResult> Registro([FromBody] Pedido pedido, string sandbox)
         {
             pedido.IdPedido = Guid.NewGuid().ToString();
             string ciudad = pedido.Ubicacion;
@@ -74,27 +76,40 @@ namespace PedidosAPI.Controllers
             {
                 (temperatura, humedad) = await WeatherUtility.ConsultarTiempoAsync(ciudad, weatherURL);
 
-                
-                using (var conexion = new SqlConnection(cadenaSQL))
+                SqlConnection conexion;
+
+                if (sandbox == "true")
                 {
-                    conexion.Open();
-                    SqlCommand cmd = new SqlCommand("sp_InsertarPedido", conexion);
-
-                    cmd.Parameters.AddWithValue("IdPedido", pedido.IdPedido);
-                    cmd.Parameters.AddWithValue("Nombre", pedido.Nombre);
-                    cmd.Parameters.AddWithValue("Descripcion", pedido.Descripcion);
-                    cmd.Parameters.AddWithValue("Ubicacion", pedido.Ubicacion);
-                    cmd.Parameters.AddWithValue("Sandbox", pedido.Sandbox);
-                    cmd.Parameters.AddWithValue("Temperatura", temperatura);
-                    cmd.Parameters.AddWithValue("Humedad", humedad);
-
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-
-                    cmd.ExecuteNonQuery();
+                    conexion = new SqlConnection(cadenaSQL);
                 }
+                else if (sandbox == "false")
+                {
+                    conexion = new SqlConnection(cadenaSQLProd);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new { mensaje = "El valor de 'sandbox' no es válido." });
+                }
+                using (conexion)
+                        {
+                            conexion.Open();
+                            SqlCommand cmd = new SqlCommand("sp_InsertarPedido", conexion);
 
+                            cmd.Parameters.AddWithValue("IdPedido", pedido.IdPedido);
+                            cmd.Parameters.AddWithValue("Nombre", pedido.Nombre);
+                            cmd.Parameters.AddWithValue("Descripcion", pedido.Descripcion);
+                            cmd.Parameters.AddWithValue("Ubicacion", pedido.Ubicacion);
+                            cmd.Parameters.AddWithValue("Temperatura", temperatura);
+                            cmd.Parameters.AddWithValue("Humedad", humedad);
+
+                            cmd.CommandType = CommandType.StoredProcedure;
+
+                            cmd.ExecuteNonQuery();
+
+                        }
+                
                 return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok"});
+                
 
             }
             catch (Exception error)

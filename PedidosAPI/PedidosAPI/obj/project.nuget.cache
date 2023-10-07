@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vVgypO+Y6hTVsvo+siQzCeCRfDmPhBZN9YmclwemS75kCP9rw5o5sFW+PG8ZVXkhdvuxsh/MEEmGDYs1YFtAIw==",
+  "dgSpecHash": "E2EnUj4Q841FkSOCR13KI7IjuvPF/wGBYapz/q2d9ub/XgsHgKuY30q6Rh+pAHgKO/P5hfn/jPMBJSzY0aL7Og==",
   "success": true,
-  "projectFilePath": "C:\\Users\\mario\\source\\repos\\PedidosAPI\\PedidosAPI\\PedidosAPI.csproj",
+  "projectFilePath": "C:\\Users\\mario\\source\\repos\\pedidosApi\\PedidosAPI\\PedidosAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mario\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\mario\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
