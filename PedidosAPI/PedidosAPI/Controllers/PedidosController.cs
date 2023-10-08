@@ -67,16 +67,13 @@ namespace PedidosAPI.Controllers
         public async Task<IActionResult> Registro([FromBody] Pedido pedido, string sandbox)
         {
             pedido.IdPedido = Guid.NewGuid().ToString();
-            string ciudad = pedido.Ubicacion;
             int temperatura;
             int humedad;
+            string weatherURL = "http://api.weatherstack.com/current?access_key=c190f8aeb7838b5dc98e1e2cb169471e&query=";
+            SqlConnection conexion;
 
             try
             {
-                (temperatura, humedad) = await WeatherUtility.CheckWeatherAsync(ciudad, weatherURL);
-
-                SqlConnection conexion;
-
                 if (sandbox == "true")
                 {
                     conexion = new SqlConnection(cadenaSQL);
@@ -87,8 +84,13 @@ namespace PedidosAPI.Controllers
                 }
                 else
                 {
-                    return StatusCode(StatusCodes.Status400BadRequest, new { mensaje = "El valor de 'sandbox' no es válido." });
+                    return BadRequest("El valor de 'sandbox' no es válido.");
                 }
+
+
+
+                (temperatura, humedad) = await WeatherUtility.CheckWeatherAsync(pedido.Ubicacion, weatherURL);
+
                 using (conexion)
                         {
                             conexion.Open();
@@ -107,13 +109,13 @@ namespace PedidosAPI.Controllers
 
                         }
                 
-                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok"});
+                return Ok(pedido);
                 
 
             }
             catch (Exception error)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message });
+                return StatusCode(StatusCodes.Status400BadRequest, new { mensaje = error.Message });
             }
         }
 
@@ -162,8 +164,9 @@ namespace PedidosAPI.Controllers
 
             try
             {
-                string query = $"{weatherURL}?city={ciudad}";
-                using (HttpClient httpClient = new HttpClient())
+
+                string query = $"http://api.weatherstack.com/current?access_key=c190f8aeb7838b5dc98e1e2cb169471e&query={ciudad}";
+                using (HttpClient httpClient = new())
                 {
                     HttpResponseMessage response = await httpClient.GetAsync(query);
 
@@ -172,8 +175,15 @@ namespace PedidosAPI.Controllers
                         string json = await response.Content.ReadAsStringAsync();
                         Weatherstack weatherData = JsonSerializer.Deserialize<Weatherstack>(json);
 
-                        temperatura = weatherData.current.temperature;
-                        humedad = weatherData.current.humidity;
+                        if (weatherData != null && weatherData.current != null)
+                        {
+                            temperatura = weatherData.current.temperature;
+                            humedad = weatherData.current.humidity;
+                        }
+                        else
+                        {
+                            throw new Exception("Los datos del clima no son válidos o están incompletos.");
+                        }
                     }
                 }
             }
