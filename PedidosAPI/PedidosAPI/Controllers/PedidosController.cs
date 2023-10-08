@@ -54,7 +54,7 @@ namespace PedidosAPI.Controllers
                     }
                 }
 
-                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = lista });
+                return Ok(lista);
 
             }catch(Exception error)
             {
