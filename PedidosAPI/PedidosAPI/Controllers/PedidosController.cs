@@ -7,8 +7,7 @@ using System.Text.Json;
 
 namespace PedidosAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+
     public class PedidosController : ControllerBase
     {
         private readonly string cadenaSQL;
@@ -74,7 +73,7 @@ namespace PedidosAPI.Controllers
 
             try
             {
-                (temperatura, humedad) = await WeatherUtility.ConsultarTiempoAsync(ciudad, weatherURL);
+                (temperatura, humedad) = await WeatherUtility.CheckWeatherAsync(ciudad, weatherURL);
 
                 SqlConnection conexion;
 
@@ -124,7 +123,7 @@ namespace PedidosAPI.Controllers
     {
         
         private readonly string weatherURL;
-        private readonly HttpClient httpClient;
+
         public WeatherstackController(IConfiguration configuration)
         {
             weatherURL = configuration.GetConnectionString("WeatherURL");
@@ -139,7 +138,7 @@ namespace PedidosAPI.Controllers
             int humedad;
             try
             {
-                (temperatura, humedad) = await WeatherUtility.ConsultarTiempoAsync(city, weatherURL);
+                (temperatura, humedad) = await WeatherUtility.CheckWeatherAsync(city, weatherURL);
 
                     string weatherDescription = $"En {city} hay una temperatura de {temperatura} ºC con una humedad del {humedad} %.";
 
@@ -156,7 +155,7 @@ namespace PedidosAPI.Controllers
 
     public static class WeatherUtility
     {
-        public static async Task<(int temperatura, int humedad)> ConsultarTiempoAsync(string ciudad, string weatherURL)
+        public static async Task<(int temperatura, int humedad)> CheckWeatherAsync(string ciudad, string weatherURL)
         {
             int temperatura = 0;
             int humedad = 0;
