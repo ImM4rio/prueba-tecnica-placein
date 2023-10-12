@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "HLdiYrx/cAq3kwaE5asKRrztmmDpQaPbJ7ZjvYZfQRgXzxOhUvH7G6Ok+ENnxiOjUYE1LUwuzpbNbtTSySrFRw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\mario\\OneDrive\\Desktop\\React\\prueba-tecnica-react\\CinemaCriticAppBlazor\\CinemaCriticAppRepositories\\CinemaCriticAppRepositories.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mario\\.nuget\\packages\\dapper\\2.1.4\\dapper.2.1.4.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,70 @@
+﻿@using CinemaCriticApp.Client.Models;
+
+<!-- Component for render movies -->
+
+@if(movies == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else if ( movies.ToList().Count == 0 && movies != null)
+{
+    <p>No se han encontrado películas para esta búsqueda ... </p>
+}
+else
+{
+    
+    <div class="container">
+        @for (int i = 0; i < NumberOfRows; i++)
+        {
+            <div class="row">
+                @foreach (var movie in movies.Skip(i * 5).Take(5))
+                {
+                    <div class="col">
+                        <div class="card border-primary mb-3">
+                            <div class="card-header">
+                                Puntuación: @movie.VoteAverage
+                            </div>
+                            <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/@movie.Posterpath" @onclick="() => OpenModal(movie)" alt="Poster de la película @movie.Title" />
+                            <div class="card-body">
+                                <h5 class="card-title">@movie.Title</h5>
+                                <h6>@movie.ReleaseDate</h6>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    @if (isModalOpen)
+    {
+        <CommentModal SelectedMovie="SelectedMovie" isModalOpen="isModalOpen" CloseModal="CloseModal" />
+    }
+}
+
+
+
+
+@code {
+
+    [Parameter] public IEnumerable<Movie> movies { get; set; }
+
+
+    public int NumberOfRows { get; set; } = 10;
+    public Boolean isModalOpen = false;
+    public Movie SelectedMovie { get; set; }
+
+
+    private void OpenModal(Movie movie)
+    {
+        SelectedMovie = movie;
+        isModalOpen = true;
+    }
+
+    private void CloseModal()
+    {
+        isModalOpen = false;
+        SelectedMovie = null;
+    }
+}
+

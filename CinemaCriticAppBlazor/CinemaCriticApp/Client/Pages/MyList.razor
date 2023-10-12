@@ -1,0 +1,73 @@
+﻿@page "/mylist"
+@using CinemaCriticApp.Client.Services;
+@using CinemaCriticApp.Shared;
+@inject ICommentService CommentService
+
+<PageTitle>Críticas</PageTitle>
+@if (comments == null)
+{
+    <p><em>Cargando....</em></p>
+}
+else if (comments.ToList().Count == 0 && comments != null)
+{
+    <p>No existe ningún comentario en CinemaCriticApp, vuelve a la sección de las películas y añade tu crítica !! </p>
+}
+else
+{
+    <div class="container">
+
+        @for (int i = 0; i < count; i++)
+        {
+            <div class="row">
+                @foreach (var comment in comments.Skip(i * 5).Take(5))
+                {
+                    <div class="col">
+                        <div class="card border-primary mb-3">
+                            <div class="card-header">
+                                Puntuación: @comment.Rating
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@comment.Title</h5>
+                                <p>@comment.Critic</p>
+                            </div>
+                            <div class="card-footer text-end">
+                                <button type="button" @onclick="() => Delete(comment.Id)" class="btn btn-danger">Borrar</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+
+}
+
+
+@code {
+    public IEnumerable<Comment> comments = new List<Comment>();
+    public Comment comment;
+    public int count;
+
+    protected override async Task OnInitializedAsync()
+    {
+        comments = await CommentService.GetAllComments();
+        count = comments.ToList().Count;
+        comment = new Comment();
+    }
+
+    protected async Task Delete(int id)
+    {
+        await CommentService.DeleteComment(id);
+
+        var commentToRemove = comments.FirstOrDefault(c => c.Id == id);
+        if (commentToRemove != null)
+        {
+            comments = comments.Except(new[] { commentToRemove });
+            count = comments.Count();
+        }
+
+        StateHasChanged();
+    }
+
+}

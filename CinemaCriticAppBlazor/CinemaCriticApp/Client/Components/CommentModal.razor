@@ -1,0 +1,85 @@
+﻿@using CinemaCriticApp.Client.Models;
+<!-- CommentModal component Blazor-->
+@using CinemaCriticApp.Shared;
+@using Services
+@inject ICommentService CommentService
+
+
+<EditForm Model="comment" OnValidSubmit="CloseModal">
+    <div class="modal bg-dark d-flex bg-opacity-75" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Añadir crítica a @SelectedMovie.Title</h4>
+                    <button type="button" class="btn-close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row justify-content-around">
+                            <div class="col-6">
+                            <div class="row">Título Original: <p class="fs-4">@SelectedMovie.OriginalTitle</p></div>
+                                <div class="row">Fecha de estreno: <p class="fs-4">@SelectedMovie.ReleaseDate</p></div>
+                                <div class="row">Descripción: <p class="fs-4">@SelectedMovie.Overview</p></div>
+                                <div class="row">Media de votos: <p class="fs-4">@SelectedMovie.VoteAverage</p></div>
+                                <div class="row">Total de votos: <p class="fs-4">@SelectedMovie.VoteCount</p></div>
+                            </div>
+                            <div class="col-4">
+                                <div class="row mt-5">
+                                    <h4>Calificación:</h4>
+                                    <select class="form-select" @bind="comment.Rating" >
+                                        <option selected>Califica esta película</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </div>
+                                <div class="row mt-5">
+                                    <h4>Comentario:</h4>
+                                </div>
+                                <div class="row form-floating">
+                                    <textarea class="form-control" @bind="comment.Critic" placeholder="Deja tu comentario aquí" style="height: 10em;"></textarea>
+                                    <label for="floatingTextarea">Introduce aquí tu comentario</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseModal">Cerrar</button>
+                    <button type="submit" class="btn btn-success" @onclick="Save">Guardar crítica</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter] public Movie SelectedMovie { get; set; }
+    [Parameter] public bool isModalOpen { get; set; }
+    [Parameter] public EventCallback CloseModal { get; set; }
+
+    public Comment comment;
+    private int rating;
+
+
+    protected override void OnInitialized()
+    {
+        comment = new Comment();
+    }
+
+    protected async Task Save()
+    {
+        comment.Title = SelectedMovie.Title;
+        await CommentService.SaveComment(comment);
+    }
+
+}

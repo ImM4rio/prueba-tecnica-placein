@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\CinemaCriticApp.Client.props" />
+</Project>

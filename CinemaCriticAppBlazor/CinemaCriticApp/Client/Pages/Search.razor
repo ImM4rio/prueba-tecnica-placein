@@ -1,0 +1,41 @@
+﻿@page "/"
+@using Models
+@using Services
+
+@inject IMoviesService MovieService
+
+
+@if ( movies == null)
+{
+    <p><em>Loading....</em></p>
+}
+else
+{
+    <nav class="navbar navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand"><h1>Lista de películas</h1></a>
+            <form class="d-flex" @onsubmit="SearchMovies">
+                <input class="form-control me-2" @bind="searchQuery" placeholder="Buscar películas..." aria-label="Search">
+                <button class="btn btn-outline-primary" @onclick="SearchMovies" type="button">Buscar</button>
+            </form>
+        </div>
+    </nav>
+    <CinemaCriticApp.Client.Components.MovieList movies="movies" />
+
+}
+
+@code {
+    IEnumerable<Movie> movies = new List<Movie>();
+    public string? searchQuery;
+
+    protected override async Task OnInitializedAsync()
+    {
+        movies = await MovieService.GetPopularMovies();
+    }
+
+    private async Task SearchMovies()
+    {
+        movies = await MovieService.GetMoviesByName(searchQuery);
+    }
+
+}
